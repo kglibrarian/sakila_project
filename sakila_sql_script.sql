@@ -102,11 +102,31 @@ ORDER BY a.last_name;
 -- of movies starting with the letters `K` and `Q` whose language is English.
 -- SELECT title, language_id FROM sakila.film WHERE title LIKE 
 SELECT title, language_id FROM sakila.film WHERE ((SUBSTRING(title, 1, 1) = "K" OR SUBSTRING(title, 1, 1) = "Q") 
-AND language_id IN (SELECT language_id FROM sakila.language WHERE name = "English"))
+AND language_id IN (SELECT language_id FROM sakila.language WHERE name = "English"));
 
 -- 7b. Use subqueries to display all actors who appear in the film `Alone Trip`.
+SELECT first_name, last_name FROM sakila.actor WHERE actor_id IN (
+SELECT actor_id FROM sakila.film_actor WHERE film_id IN (
+SELECT film_id FROM sakila.film WHERE title = 'Alone Trip'));
 
--- 7c. You want to run an email marketing campaign in Canada, for which you will need the names and email addresses of all Canadian customers. Use joins to retrieve this information.
+
+-- 7c. You want to run an email marketing campaign in Canada, for which you will need the names and email 
+-- addresses of all Canadian customers. Use joins to retrieve this information.
+SELECT a.first_name, a.last_name, a.email, country 
+FROM sakila.customer a LEFT JOIN sakila.address b
+WHERE a.address_id = b.address_id
+
+(select a.city_id, a.country_id, b.address_id
+from sakila.city a left join sakila.address b
+on a.city_id = b.city_id)
+(select c.country, c.country_id, d.city_id
+from sakila.country c left join sakila.city d
+on c.country_id = d.country_id
+where c.country = 'Canada')
+
+
+ 
+
 
 -- 7d. Sales have been lagging among young families, and you wish to target all family movies for a promotion. Identify all movies categorized as _family_ films.
 
