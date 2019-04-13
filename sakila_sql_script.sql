@@ -137,6 +137,18 @@ WHERE c.name = "Family";
 
 -- 7e. Display the most frequently rented movies in descending order.
 
+SELECT title, COUNT(inventory_id) number_rentals FROM
+(SELECT a.title, c.inventory_id
+FROM sakila.film a
+INNER JOIN sakila.inventory b
+    ON b.film_id = a.film_id
+INNER JOIN rental c
+    ON c.inventory_id = b.inventory_id) d
+GROUP BY title
+ORDER BY number_rentals DESC;
+
+
+
 -- 7f. Write a query to display how much business, in dollars, each store brought in.
 
 -- 7g. Write a query to display for each store its store ID, city, and country.
