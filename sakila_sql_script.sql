@@ -147,13 +147,45 @@ INNER JOIN rental c
 GROUP BY title
 ORDER BY number_rentals DESC;
 
-
-
 -- 7f. Write a query to display how much business, in dollars, each store brought in.
+SELECT store_id, SUM(amount) AS total_amount FROM(
+SELECT a.staff_id, a.amount, a.rental_id, b.store_id
+FROM sakila.payment a
+LEFT JOIN sakila.staff b
+    ON a.staff_id = b.staff_id) c
+GROUP BY 1 
+ORDER BY 1;
 
 -- 7g. Write a query to display for each store its store ID, city, and country.
+SELECT a.store_id, c.city, d.country
+FROM sakila.store a
+INNER JOIN sakila.address b
+    ON b.address_id = a.address_id
+INNER JOIN sakila.city c
+    ON c.city_id = b.city_id
+INNER JOIN sakila.country d
+    ON d.country_id = c.country_id; 
 
- -- 7h. List the top five genres in gross revenue in descending order. (**Hint**: you may need to use the following tables: category, film_category, inventory, payment, and rental.)
+ -- 7h. List the top five genres in gross revenue in descending order. (**Hint**: you may need to use the 
+ -- following tables: category, film_category, inventory, payment, and rental.)
+SELECT name, SUM(amount) gross_revenue FROM(
+SELECT a.name, e.amount
+FROM sakila.category a
+INNER JOIN sakila.film_category b
+    ON b.category_id = a.category_id
+INNER JOIN sakila.inventory d
+    ON d.film_id = b.film_id
+INNER JOIN sakila.rental c
+    ON c.inventory_id = d.inventory_id
+INNER JOIN sakila.payment e
+    ON e.rental_id = c.rental_id) f
+ GROUP BY 1
+ ORDER BY 2 DESC
+ LIMIT 5;
+
+
+
+
 
 -- 8a. In your new role as an executive, you would like to have an easy way of viewing the Top five genres by gross revenue. Use the solution from the problem above to create a view. If you haven't solved 7h, you can substitute another query to create a view.
 
