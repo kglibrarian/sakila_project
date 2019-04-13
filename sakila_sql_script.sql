@@ -184,15 +184,30 @@ INNER JOIN sakila.payment e
  LIMIT 5;
 
 
-
-
-
--- 8a. In your new role as an executive, you would like to have an easy way of viewing the Top five genres by gross revenue. Use the solution from the problem above to create a view. If you haven't solved 7h, you can substitute another query to create a view.
+-- 8a. In your new role as an executive, you would like to have an easy way of viewing the Top five genres 
+-- by gross revenue. Use the solution from the problem above to create a view. If you haven't solved 7h, you 
+-- can substitute another query to create a view.
+CREATE VIEW top_five_genres AS
+SELECT name, SUM(amount) gross_revenue FROM(
+SELECT a.name, e.amount
+FROM sakila.category a
+INNER JOIN sakila.film_category b
+    ON b.category_id = a.category_id
+INNER JOIN sakila.inventory d
+    ON d.film_id = b.film_id
+INNER JOIN sakila.rental c
+    ON c.inventory_id = d.inventory_id
+INNER JOIN sakila.payment e
+    ON e.rental_id = c.rental_id) f
+ GROUP BY 1
+ ORDER BY 2 DESC
+ LIMIT 5;
 
 -- 8b. How would you display the view that you created in 8a?
+SELECT * FROM sakila.top_five_genres;
 
 -- 8c. You find that you no longer need the view `top_five_genres`. Write a query to delete it.
-
+DROP VIEW sakila.top_five_genres; 
 
 -- Tables in Sakila Database 
 -- actor 
