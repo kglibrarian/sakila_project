@@ -112,23 +112,28 @@ SELECT film_id FROM sakila.film WHERE title = 'Alone Trip'));
 
 -- 7c. You want to run an email marketing campaign in Canada, for which you will need the names and email 
 -- addresses of all Canadian customers. Use joins to retrieve this information.
-SELECT a.first_name, a.last_name, a.email, country 
-FROM sakila.customer a LEFT JOIN sakila.address b
-WHERE a.address_id = b.address_id
 
-(select a.city_id, a.country_id, b.address_id
-from sakila.city a left join sakila.address b
-on a.city_id = b.city_id)
-(select c.country, c.country_id, d.city_id
-from sakila.country c left join sakila.city d
-on c.country_id = d.country_id
-where c.country = 'Canada')
+-- CREATE TABLE canadacustomers
+SELECT a.first_name, a.last_name, a.email, d.country
+FROM sakila.customer a
+INNER JOIN address b
+    ON b.address_id = a.address_id
+INNER JOIN city c
+    ON c.city_id = b.city_id
+INNER JOIN country d
+    ON d.country_id = c.country_id
+WHERE d.country = "Canada";
 
+ -- 7d. Sales have been lagging among young families, and you wish to target all family movies for a promotion. 
+-- Identify all movies categorized as _family_ films.
 
- 
-
-
--- 7d. Sales have been lagging among young families, and you wish to target all family movies for a promotion. Identify all movies categorized as _family_ films.
+SELECT a.title, c.name
+FROM sakila.film a
+INNER JOIN film_category b
+    ON b.film_id = a.film_id
+INNER JOIN category c
+    ON c.category_id = b.category_id
+WHERE c.name = "Family";
 
 -- 7e. Display the most frequently rented movies in descending order.
 
